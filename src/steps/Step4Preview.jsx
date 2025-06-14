@@ -34,11 +34,12 @@ export default function Step4Preview() {
 
       <div
         ref={cartaRef}
-        className={`rounded-xl shadow-md p-6 ${fontClass} bg-white`}
+        className={`shadow-md p-6 ${fontClass}`}
         style={{
           backgroundColor: design.colors.background,
           color: design.colors.text,
-          border: `2px solid ${design.colors.border}`,
+          border: `${design.borderWidth} solid ${design.colors.border}`,
+          borderRadius: design.borderRadius,
         }}
       >
         {design.logo && (

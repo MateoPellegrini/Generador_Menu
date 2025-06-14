@@ -8,14 +8,28 @@ export default function Step2Design() {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name.includes("colors.")) {
+    if (name === "template") {
+      if (value === "") {
+        setFormData(prev => ({ ...prev, template: "" }));
+      } else {
+        const preset = PRESET_STYLES[value];
+        setFormData(prev => ({
+          ...prev,
+          template: value,
+          ...preset,
+        }));
+      }
+    } else if (name.includes("colors.")) {
       const key = name.split(".")[1];
       setFormData((prev) => ({
         ...prev,
         colors: { ...prev.colors, [key]: value },
       }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
@@ -33,6 +47,37 @@ export default function Step2Design() {
   const continuar = () => {
     dispatch({ type: "SET_DESIGN", payload: formData });
     dispatch({ type: "SET_STEP", payload: 3 });
+  };
+
+  const isTemplateSelected = formData.template !== "";
+
+  // Añadilo en Step2Design.jsx, justo antes de los pickers de color
+  const presets = [
+    { id: '', name: 'Ninguno', preview: '/assets/presets/none.png' },
+    { id: 'minimal', name: 'Minimal', preview: '/assets/presets/minimal.png' },
+    { id: 'classic', name: 'Clásico', preview: '/assets/presets/classic.png' },
+    { id: 'fancy', name: 'Elegante', preview: '/assets/presets/fancy.png' },
+  ];
+
+  const PRESET_STYLES = {
+    minimal: {
+      colors: { background: '#fff', text: '#111', border: '#ddd' },
+      font: 'sans',
+      borderWidth: '1px',
+      borderRadius: '0.25rem',
+    },
+    classic: {
+      colors: { background: '#faf5e6', text: '#333', border: '#ccc' },
+      font: 'serif',
+      borderWidth: '2px',
+      borderRadius: '0.5rem',
+    },
+    fancy: {
+      colors: { background: '#f0f0f5', text: '#222', border: '#aaa' },
+      font: 'serif',
+      borderWidth: '4px',
+      borderRadius: '1rem',
+    },
   };
 
   return (
@@ -62,6 +107,35 @@ export default function Step2Design() {
           />
         </label>
 
+
+
+        <label className="block">
+          <span className="text-gray-700">Estilo de carta</span>
+          <div className="flex gap-4 mt-2">
+            {presets.map(p => (
+              <div key={p.id} className="cursor-pointer text-center">
+                <img
+                  src={p.preview}
+                  alt={p.name}
+                  className={`w-24 h-24 object-cover rounded-lg border-2 
+            ${formData.template === p.id
+                      ? 'border-blue-600'
+                      : 'border-transparent hover:border-gray-400'}`}
+                  onClick={() => {
+                    const preset = PRESET_STYLES[p.id];
+                    setFormData(prev => ({
+                      ...prev,
+                      template: p.id,
+                      ...preset
+                    }));
+                  }}
+                />
+                <p className="text-sm mt-1">{p.name}</p>
+              </div>
+            ))}
+          </div>
+        </label>
+
         <div className="flex gap-4">
           <label className="flex-1">
             <span className="text-gray-700">Color fondo</span>
@@ -71,6 +145,7 @@ export default function Step2Design() {
               value={formData.colors.background}
               onChange={handleChange}
               className="w-full h-10 p-0 border-none"
+              disabled={isTemplateSelected}
             />
           </label>
           <label className="flex-1">
@@ -81,6 +156,7 @@ export default function Step2Design() {
               value={formData.colors.text}
               onChange={handleChange}
               className="w-full h-10 p-0 border-none"
+              disabled={isTemplateSelected}
             />
           </label>
           <label className="flex-1">
@@ -91,9 +167,40 @@ export default function Step2Design() {
               value={formData.colors.border}
               onChange={handleChange}
               className="w-full h-10 p-0 border-none"
+              disabled={isTemplateSelected}
             />
           </label>
         </div>
+
+        <label className="block">
+          <span className="text-gray-700 mr-1">Grosor de bordes</span>
+          <select
+            name="borderWidth"
+            value={formData.borderWidth}
+            onChange={handleChange}
+            className="input mt-1"
+            disabled={isTemplateSelected}
+          >
+            <option value="1px">Delgado</option>
+            <option value="2px">Medio</option>
+            <option value="4px">Grueso</option>
+          </select>
+        </label>
+
+        <label className="block">
+          <span className="text-gray-700 mr-1">Radio de esquinas</span>
+          <select
+            name="borderRadius"
+            value={formData.borderRadius}
+            onChange={handleChange}
+            className="input mt-1"
+            disabled={isTemplateSelected}
+          >
+            <option value="0.25rem">Suave</option>
+            <option value="0.5rem">Medio</option>
+            <option value="1rem">Redondeado</option>
+          </select>
+        </label>
 
         <label className="block">
           <span className="text-gray-700">Tipografía</span>
