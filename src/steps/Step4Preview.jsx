@@ -1,9 +1,10 @@
 import { useWizard } from "../context/WizardContext";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import html2pdf from "html2pdf.js";
 
 export default function Step4Preview() {
   const { design, categories, dispatch } = useWizard();
+  const [loading, setLoading] = useState(false);
   const cartaRef = useRef();
 
   const avanzar = () => {
@@ -11,15 +12,53 @@ export default function Step4Preview() {
   };
 
   const descargarPDF = () => {
+    const element = cartaRef.current;
+    if (!element) return;
+
+    // Guardamos estilos previos
+    const prevStyles = {
+      width: element.style.width,
+      minHeight: element.style.minHeight,
+      margin: element.style.margin,
+    };
+    setLoading(true);
+    
+    // Ajustamos A4
+    element.style.width = "210mm";
+    element.style.minHeight = "297mm";
+    element.style.margin = "0";
+
     const opt = {
-      margin: 0.5,
+      margin: 0,
       filename: "carta_digital.pdf",
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
     };
 
-    html2pdf().set(opt).from(cartaRef.current).save();
+    setTimeout(() => {
+      html2pdf()
+        .set(opt)
+        .from(element)
+        .toPdf()
+        .get("pdf")
+        .then((pdf) => {
+          // Si hay más de una página, borramos las extras
+          const total = pdf.internal.getNumberOfPages();
+          for (let i = total; i > 1; i--) {
+            pdf.deletePage(i);
+          }
+        })
+        .save() // guarda ya sin las páginas extras
+        .finally(() => {
+          setLoading(false);
+
+          // Revertimos los estilos para la UI
+          element.style.width = prevStyles.width;
+          element.style.minHeight = prevStyles.minHeight;
+          element.style.margin = prevStyles.margin;
+        });
+    }, 50);
   };
 
   const fontClass = {
@@ -29,7 +68,15 @@ export default function Step4Preview() {
   }[design.font];
 
   return (
-    <div className="space-y-6">
+    <div className="relative space-y-6 overflow-hidden">
+      {loading && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-white">
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <p className="text-gray-800 mb-4">Generando tu PDF…</p>
+          </div>
+        </div>
+      )}
+
       <h2 className="text-2xl font-bold text-center text-gray-800">Vista previa de la carta</h2>
 
       <div
@@ -74,18 +121,21 @@ export default function Step4Preview() {
       <div className="flex flex-col gap-4 md:flex-row md:justify-between">
         <button
           onClick={descargarPDF}
-          className="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition"
+          disabled={loading}
+          className="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Descargar PDF
         </button>
 
         <button
           onClick={avanzar}
-          className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition"
+          disabled={loading}
+          className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Siguiente: Subir a Drive
         </button>
       </div>
     </div>
+
   );
 }

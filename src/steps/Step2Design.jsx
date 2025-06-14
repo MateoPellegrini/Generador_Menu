@@ -61,19 +61,19 @@ export default function Step2Design() {
 
   const PRESET_STYLES = {
     minimal: {
-      colors: { background: '#fff', text: '#111', border: '#ddd' },
+      colors: { background: '#ffffff', text: '#111111', border: '#dddddd' },
       font: 'sans',
       borderWidth: '1px',
       borderRadius: '0.25rem',
     },
     classic: {
-      colors: { background: '#faf5e6', text: '#333', border: '#ccc' },
+      colors: { background: '#faf5e6', text: '#333333', border: '#cccccc' },
       font: 'serif',
       borderWidth: '2px',
       borderRadius: '0.5rem',
     },
     fancy: {
-      colors: { background: '#f0f0f5', text: '#222', border: '#aaa' },
+      colors: { background: '#f0f0f5', text: '#222222', border: '#aaaaaa' },
       font: 'serif',
       borderWidth: '4px',
       borderRadius: '1rem',
