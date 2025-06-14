@@ -3,8 +3,10 @@ import { QRCodeCanvas } from "qrcode.react";
 import { useRef } from "react";
 
 export default function Step6GenerateQR() {
-  const { qrLink } = useWizard();
+  const { driveLink } = useWizard();
   const qrRef = useRef(null);
+
+    console.log(driveLink);
 
   const descargarQR = () => {
     const canvas = qrRef.current.querySelector("canvas");
@@ -21,23 +23,25 @@ export default function Step6GenerateQR() {
 
       <p className="text-gray-600">Este QR abre tu carta desde el enlace que cargaste:</p>
 
-      <div ref={qrRef} className="inline-block p-4 bg-white rounded-xl shadow">
+      <div ref={qrRef} className="inline-block p-4 bg-white rounded-xl shadow mb-4">
         <QRCodeCanvas
-          value={qrLink}
+          value={driveLink}
           size={220}
           bgColor="#ffffff"
           fgColor="#000000"
           level="H"
-          includeMargin
         />
       </div>
 
-      <button
-        onClick={descargarQR}
-        className="mt-4 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition"
-      >
-        Descargar QR
-      </button>
+      {/* Aquí va el botón debajo del QR */}
+      <div className="mt-4">
+        <button
+          onClick={descargarQR}
+          className="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition"
+        >
+          Descargar QR
+        </button>
+      </div>
 
       <p className="mt-4 text-sm text-gray-500">
         Ahora podés imprimirlo, compartirlo o pegarlo donde quieras 📌

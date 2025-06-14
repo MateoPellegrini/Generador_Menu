@@ -11,7 +11,7 @@ export default function Step5UploadDrive() {
       return;
     }
 
-    dispatch({ type: "SET_QR_LINK", payload: driveUrl });
+    dispatch({ type: "SET_DRIVE_LINK", payload: driveUrl });
     dispatch({ type: "SET_STEP", payload: 6 });
   };
 

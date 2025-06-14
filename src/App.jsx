@@ -3,6 +3,7 @@ import Step2Design from "./steps/Step2Design";
 import Step3Products from "./steps/Step3Products";
 import Step4Preview from "./steps/Step4Preview";
 import Step5UploadDrive from "./steps/Step5UploadDrive";
+import Step6GenerateQR from "./steps/Step6GenerateQR";
 
 import { useWizard } from "./context/WizardContext";
 
