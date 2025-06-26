@@ -61,12 +61,6 @@ export default function Step4Preview() {
     }, 50);
   };
 
-  const fontClass = {
-    sans: "font-sans",
-    serif: "font-serif",
-    mono: "font-mono",
-  }[design.font];
-
   return (
     <div className="relative space-y-6 overflow-hidden">
       {loading && (
@@ -81,12 +75,13 @@ export default function Step4Preview() {
 
       <div
         ref={cartaRef}
-        className={`shadow-md p-6 ${fontClass}`}
+        className={`shadow-md p-6`}
         style={{
           backgroundColor: design.colors.background,
           color: design.colors.text,
           border: `${design.borderWidth} solid ${design.colors.border}`,
           borderRadius: design.borderRadius,
+          fontFamily: design.font,
         }}
       >
         {design.logo && (

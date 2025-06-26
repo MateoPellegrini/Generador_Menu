@@ -1,5 +1,38 @@
 import { useWizard } from "../context/WizardContext";
 import { useState } from "react";
+import Select from "react-select";
+
+
+const fontOptions = [
+  { value: 'sans-serif', label: 'Sans Serif', fontFamily: 'sans-serif' },
+  { value: 'serif', label: 'Serif', fontFamily: 'serif' },
+  { value: 'monospace', label: 'Monoespaciada', fontFamily: 'monospace' },
+  { value: 'roboto', label: 'Roboto', fontFamily: "'Roboto', sans-serif" },
+  { value: 'lora', label: 'Lora', fontFamily: "'Lora', serif" }
+];
+
+const customStyles = {
+  option: (provided, state) => ({
+    ...provided,
+    fontFamily: state.data.fontFamily
+  }),
+  singleValue: (provided, state) => ({
+    ...provided,
+    fontFamily: state.data.fontFamily
+  })
+};
+
+function FontSelector({ value, onChange, isDisabled }) {
+  return (
+<Select
+      options={fontOptions}
+      styles={customStyles}
+      onChange={onChange}
+      value={fontOptions.find(opt => opt.fontFamily === value)}
+      isDisabled={isDisabled}
+    />
+  );
+}
 
 export default function Step2Design() {
   const { design, dispatch } = useWizard();
@@ -62,7 +95,7 @@ export default function Step2Design() {
   const PRESET_STYLES = {
     minimal: {
       colors: { background: '#ffffff', text: '#111111', border: '#dddddd' },
-      font: 'sans',
+      font: 'sans-serif',
       borderWidth: '1px',
       borderRadius: '0.25rem',
     },
@@ -117,10 +150,10 @@ export default function Step2Design() {
                 <img
                   src={p.preview}
                   alt={p.name}
-                  className={`w-24 h-24 object-cover rounded-lg border-2 
+                  className={`w-24 h-24 object-cover rounded-lg border-2
             ${formData.template === p.id
                       ? 'border-blue-600'
-                      : 'border-transparent hover:border-gray-400'}`}
+                      : 'border-gray-200 hover:border-gray-400'}`}
                   onClick={() => {
                     const preset = PRESET_STYLES[p.id];
                     setFormData(prev => ({
@@ -204,16 +237,20 @@ export default function Step2Design() {
 
         <label className="block">
           <span className="text-gray-700">Tipografía</span>
-          <select
-            name="font"
+          <div>
+          <FontSelector
             value={formData.font}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2 mt-1"
-          >
-            <option value="sans">Sans Serif</option>
-            <option value="serif">Serif</option>
-            <option value="mono">Monoespaciada</option>
-          </select>
+            isDisabled={isTemplateSelected}
+            onChange={(opt) => {
+              setFormData(prev => ({
+                ...prev,
+                // además de la fuente, podés limpiar el template si querés “desbloquear”
+                template: '',
+                font: opt.fontFamily
+              }));
+            }}
+          />
+          </div>
         </label>
       </div>
 

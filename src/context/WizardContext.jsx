@@ -11,7 +11,10 @@ const initialState = {
       text: "#000000",
       border: "#cccccc",
     },
-    font: "sans",
+    font: "sans-serif",
+    template: "",
+    borderWidth: "2px",
+    borderRadius: "0.5rem",
   },
   categories: [],           // [{ name: 'Bebidas', products: [...] }]
   driveLink: "",            // URL del PDF subido
